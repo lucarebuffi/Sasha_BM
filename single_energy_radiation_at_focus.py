@@ -14,7 +14,7 @@ if __name__=="__main__":
 
     wfr = calculate_initial_single_energy_radiation(get_electron_beam(),
                                                     get_magnetic_field_container(magnetic_field_file_name),
-                                                    energy=190)
+                                                    energy=20)
 
     plot_single_energy_radiation(wfr, where="Before", show=False)
 
