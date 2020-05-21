@@ -5,10 +5,9 @@
 #0.0 #initial Y position [m]
 #0.0 #step of Y [m]
 #1 #number of points vs Y
-#-0.125 #initial Z position [m]
+#-0.124375 #initial Z position [m]
 #0.000625 #step of Z [m]
-#401#number of points vs Z
-0.0	0.00110254	0.0
+#400#number of points vs Z
 0.0	0.00110281	0.0
 0.0	0.00110324	0.0
 0.0	0.00110383	0.0

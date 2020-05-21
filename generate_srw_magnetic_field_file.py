@@ -16,6 +16,8 @@ if __name__ == "__main__":
     data[:, 0] *= 1e-2 # to meters
     data[:, 1] *= 1e-4 # to Tesla
 
+    numpy.savetxt(magnetic_field_file_name_input + ".out", data) # for Shadow use
+
     text = "#Bx [T], By [T], Bz [T] on 3D mesh: inmost loop vs X (horizontal transverse position), outmost loop vs Z (longitudinal position)\n" + \
            "#0.0 #initial X position [m]\n" + \
            "#0.0 #step of X [m]\n" + \
