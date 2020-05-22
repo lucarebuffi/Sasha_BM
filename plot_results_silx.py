@@ -25,7 +25,7 @@ def plot_data_files(outdir=None, plot_imaginary=False):
 
 def plot_data(arReEt, arImEt, arAmpEt, arPhiEt, arPowt, arPowDt, arPowDt2, arIntf, plot_imaginary=False):
     def plot_array(ar, title, xlabel, ylabel):
-        window = PlotWindow()
+        window = PlotWindow(fit=True)
         window.setGraphTitle(title)
         window.addCurve(ar[:, 0], ar[:, 1], xlabel=xlabel, ylabel=ylabel)
         window.show()
