@@ -31,8 +31,8 @@ def calculate_trajectory(part_beam, magnetic_field_container):
     for i in range(1, len(zz)): distance += numpy.sqrt((xx[i]-xx[i-1])**2 + (zz[i]-zz[i-1])**2)
     time = distance/velocity
 
-    print("Distance:", distance * 100, "cm,\nVelocity:", velocity, "m/s,\n=>Time:", time*1e9, "ns")
-    print("=>Current of 1 electron (e/time):", e/time, "A")
+    print("Distance:", distance * 100, "cm,\nVelocity:", velocity, "m/s,\n=> Time:", time*1e9, "ns")
+    print("=> Current of 1 electron (e/time):", e/time, "A")
 
     return partTraj
 
