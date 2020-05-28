@@ -41,7 +41,7 @@ def get_magnetic_field_container(filename):
     magnetic_field_container.allocate(1)
 
     magnetic_field_container.arMagFld[0] = magnetic_structure
-    magnetic_field_container.arMagFld[0].interp = 1
+    magnetic_field_container.arMagFld[0].interp = 4
     magnetic_field_container.arZc[0] = 0.
 
     return magnetic_field_container

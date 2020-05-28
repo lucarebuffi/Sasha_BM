@@ -52,7 +52,7 @@ if __name__=="__main__":
                                                       energy_to=121,
                                                       ne=120)
 
-    check_electric_field(wfrEXY, x0=oe1_aperturex/2, show=False)
+    check_electric_field(wfrEXY, x0=oe1_aperturex/2, show=True)
 
     plot_single_energy_radiation(wfrEXY)
 

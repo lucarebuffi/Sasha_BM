@@ -8,6 +8,8 @@ from lib.ideal_optical_system import *
 from multi_energy_radiation_from_source import calculate_initial_multi_energy_radiation
 from plot_results import plot_data
 
+import scipy.constants as codata
+
 WAVEFRONT_T_3D_FILE = "3D_Propagated_Wavefront_T.dat"
 WAVEFRONT_F_3D_FILE = "3D_Propagated_Wavefront_F.dat"
 
@@ -15,25 +17,26 @@ def calculate_multi_energy_radiation_at_focus(wfrEXY, optBL, resize=False, t0=ti
      # 3D Freq. dependent
     print("Propagating 3D E-field")
     srwl.PropagElecField(wfrEXY, optBL)
-    print("done in", round(time.time()-t0, 3))
+    print("done in", round(time.time()-t0, 3), "s")
 
     wfrEXY_F = cp_deepcopy(wfrEXY)
 
     print("Resizing in Frequency domain")
     t0 = time.time()
     srwl.ResizeElecField(wfrEXY, "f", [0, 2, 1])
-    print("done in", round(time.time()-t0, 3))
+    print("done in", round(time.time()-t0, 3), "s")
 
     print("Switching to Time domain")
     t0 = time.time()
     srwl.SetRepresElecField(wfrEXY, "t",)
-    print("done in", round(time.time()-t0, 3))
+
+    print("done in", round(time.time()-t0, 3), "s")
 
     if resize:
         print("Resizing in Time domain")
         t0 = time.time()
         srwl.ResizeElecField(wfrEXY, "t", [0, 0.5, 1])
-        print("done in", round(time.time()-t0, 3))
+        print("done in", round(time.time()-t0, 3), "s")
 
     save_3D_wavefront(wfrEXY,   filename=WAVEFRONT_T_3D_FILE)
     save_3D_wavefront(wfrEXY_F, filename=WAVEFRONT_F_3D_FILE)
@@ -89,22 +92,24 @@ def extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F, show_data
 
     arAmpEt   = array('f', [0] * mesh.ne)
     arPhiEt   = array('f', [0] * mesh.ne)
-    arPowDt2  = array('f', [0] * mesh.ne)
+
+    energy_step = (meshf.eFin - meshf.eStart)/meshf.ne
 
     for ie in range(mesh.ne):
         Et_ie = arReEt[ie] + 1.0j*arImEt[ie]
 
         arPhiEt[ie]   = numpy.angle(Et_ie)
         arAmpEt[ie]   = numpy.abs(Et_ie)
-        arPowDt2[ie]  = arPowDt[ie]/gamma**3
+        arPowt[ie]    = arPowt[ie]  * codata.e * 1000 * (meshf.eStart + ie*energy_step)
+        arPowDt[ie]   = arPowDt[ie] * codata.e * 1000 * (meshf.eStart + ie*energy_step) #/gamma**3
 
     arIntf = array('f', [0] * wfrEXY_F.mesh.ne)
     srwl.CalcIntFromElecField(arIntf, wfrEXY_F, 6, 0, 0, meshf.eStart, 0, 0)
 
-    if save_data: save_data_files(arAmpEt, arPhiEt, arPowDt, arPowDt2, arPowt, arReEt, arImEt, mesh, arIntf, meshf)
-    if show_data: plot_data(arAmpEt, arPhiEt, arPowDt, arPowDt2, arPowt, arReEt, arImEt, mesh, arIntf, meshf, plot_imaginary)
+    if save_data: save_data_files(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf)
+    if show_data: plot_data(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, plot_imaginary)
 
-def save_data_files(arAmpEt, arPhiEt, arPowDt, arPowDt2, arPowt, arReEt, arImEt, mesh, arIntf, meshf):
+def save_data_files(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf):
     outdir = os.path.join(os.getcwd(), "output")
 
     if not os.path.exists(outdir): os.mkdir(outdir)
@@ -127,17 +132,14 @@ def save_data_files(arAmpEt, arPhiEt, arPowDt, arPowDt2, arPowt, arReEt, arImEt,
     try:    srwl_uti_save_intens_ascii(arPowDt, mesh, os.path.join(outdir, "Power_Density_in_time_domain.dat"), 0)
     except: pass
 
-    try:    srwl_uti_save_intens_ascii(arPowDt2, mesh, os.path.join(outdir, "Power_Density_2_in_time_domain.dat"), 0)
-    except: pass
-
     try:    srwl_uti_save_intens_ascii(arIntf, meshf, os.path.join(os.path.join(os.getcwd(), "output"), "Int_in_frequency_domain.dat"), 0)
     except: pass
 
-    save_numpy_format(arAmpEt, arPhiEt, arPowDt, arPowDt2, arPowt, arReEt, arImEt, mesh, arIntf, meshf, outdir)
+    save_numpy_format(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, outdir)
 
 from scipy.constants import c
 
-def save_numpy_format(arAmpEt, arPhiEt, arPowDt, arPowDt2, arPowt, arReEt, arImEt, mesh, arIntf, meshf, outdir):
+def save_numpy_format(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, outdir):
     factor = c * 1e6  # to micron (c*t)
 
     def create_array(ar, mesh):
@@ -153,7 +155,6 @@ def save_numpy_format(arAmpEt, arPhiEt, arPowDt, arPowDt2, arPowt, arReEt, arImE
     numpy.savetxt(os.path.join(outdir, "Phi_E_in_time_domain.txt"), create_array(arPhiEt, mesh))
     numpy.savetxt(os.path.join(outdir, "Power_in_time_domain.txt"), create_array(arPowt, mesh))
     numpy.savetxt(os.path.join(outdir, "Power_Density_in_time_domain.txt"), create_array(arPowDt, mesh))
-    numpy.savetxt(os.path.join(outdir, "Power_Density_2_in_time_domain.txt"), create_array(arPowDt2, mesh))
     numpy.savetxt(os.path.join(outdir, "Int_in_frequency_domain.txt"), create_array(arIntf, meshf))
 
 import sys
