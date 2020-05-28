@@ -101,7 +101,7 @@ def extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F, show_data
         arPhiEt[ie]   = numpy.angle(Et_ie)
         arAmpEt[ie]   = numpy.abs(Et_ie)
         arPowt[ie]    = arPowt[ie]  * codata.e * 1000 * (meshf.eStart + ie*energy_step)
-        arPowDt[ie]   = arPowDt[ie] * codata.e * 1000 * (meshf.eStart + ie*energy_step) #/gamma**3
+        arPowDt[ie]   = arPowDt[ie] * codata.e * 1000 * (meshf.eStart + ie*energy_step)
 
     arIntf = array('f', [0] * wfrEXY_F.mesh.ne)
     srwl.CalcIntFromElecField(arIntf, wfrEXY_F, 6, 0, 0, meshf.eStart, 0, 0)
