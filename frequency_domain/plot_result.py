@@ -3,8 +3,8 @@ import numpy
 from silx.gui.plot import Plot2D
 
 def plot_power_density(x_coord, y_coord, power_density):
-    x_coord *= 1000
-    y_coord *= 1000
+    x_coord = x_coord*1000
+    y_coord = y_coord*1000
 
     origin = (x_coord[0], y_coord[0])
     scale = (x_coord[1] - x_coord[0], y_coord[1] - y_coord[0])

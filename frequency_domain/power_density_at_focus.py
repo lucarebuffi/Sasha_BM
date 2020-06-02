@@ -19,22 +19,16 @@ def get_parameters(energy=None):
                  [0, 0, 1.0, 1, 0, 1.0, 5.0, 1.0, 5.0, 0, 0.0, 0.0],
                  [0, 0, 1.0, 1, 0, 0.75, 2.0, 0.5, 2.0, 0, 0.0, 0.0]]
 
-def get_total_intensity(wfr):
+def get_intensity(wfr):
     dim_x = wfr.mesh.nx
     dim_y = wfr.mesh.ny
 
-    def get_intensity(srw_electric_field):
-        re = numpy.array(srw_electric_field[::2], dtype=numpy.float)
-        im = numpy.array(srw_electric_field[1::2], dtype=numpy.float)
-
-        intesity = numpy.abs(re + 1j * im)**2
-        intesity.reshape((dim_y, dim_x))
-
-        return intesity
+    arI = array('f', [0] * wfr.mesh.nx * wfr.mesh.ny)
+    srwl.CalcIntFromElecField(arI, wfr, 6, 0, 3, wfr.mesh.eStart, 0, 0)
 
     return numpy.linspace(wfr.mesh.xStart, wfr.mesh.xFin, wfr.mesh.nx),\
            numpy.linspace(wfr.mesh.yStart, wfr.mesh.yFin, wfr.mesh.ny),\
-           (get_intensity(wfr.arEx) + get_intensity(wfr.arEy))
+           numpy.array(arI).reshape((dim_y, dim_x)).T
 
 from scipy.interpolate import RectBivariateSpline
 from PyQt5.QtWidgets import QApplication
@@ -43,15 +37,18 @@ import sys
 if __name__=="__main__":
     if not srwl_uti_proc_is_master(): exit()
 
-    energies = numpy.linspace(0.1, 80.1, 80)
+    app = QApplication(sys.argv)
+
+    energies = numpy.linspace(1, 51, 50)
+    delta_energy = energies[1] - energies[0]
     electron_beam = get_electron_beam()
     magnetic_field_container = get_magnetic_field_container(magnetic_field_file_name)
 
-    dim_x = 200
-    dim_y = 200
+    dim_x = 201
+    dim_y = 201
 
-    plot_coordinates_x = numpy.linspace[-0.001, 0.001, dim_x]
-    plot_coordinates_y = numpy.linspace[-0.001, 0.001, dim_y]
+    plot_coordinates_x = numpy.linspace(-0.0002, 0.0002, dim_x)
+    plot_coordinates_y = numpy.linspace(-0.0002, 0.0002, dim_y)
 
     total_power_density = numpy.zeros((dim_x, dim_y))
 
@@ -59,22 +56,26 @@ if __name__=="__main__":
         wfr = calculate_initial_single_energy_radiation(electron_beam, magnetic_field_container, energy=energy)
         wfr = calculate_single_energy_radiation_at_focus(wfr, get_beamline(parameters=get_parameters(energy)))
 
-        x_coord, y_coord, intensity = get_total_intensity(wfr)
-        interpolator = RectBivariateSpline(x_coord, y_coord, intensity, bbox=[None, None, None, None], kx=1, ky=1, s=0)
+        x_coord, y_coord, intensity = get_intensity(wfr)
 
-        power_density = interpolator(plot_coordinates_x, plot_coordinates_y)
-        power_density[numpy.where(numpy.isnan(power_density))] = 0.0
-        power_density *= 1000 * energy * codata.e
+        interpolator = RectBivariateSpline(x_coord, y_coord, intensity)
+
+        intensity                = interpolator(plot_coordinates_x, plot_coordinates_y) * delta_energy / (0.001 * energy)
+        intensity[numpy.where(numpy.isnan(intensity))] = 0.0
+
+        power                    = intensity * 1000 * delta_energy * codata.e # power in the interval E + dE
+        probability_distribution = intensity / intensity.sum()
+
+        power_density            = power * probability_distribution
 
         total_power_density += power_density
 
-    outdir = os.path.join(os.getcwd(), "output/frequency_domain")
+    outdir = os.path.join(os.getcwd().split("frequency_domain")[0], "output/frequency_domain")
+    if not os.path.exists(outdir): os.mkdir(outdir)
 
     numpy.savetxt(os.path.join(outdir, "Power_Density_at_Focus_coord_x.txt"), plot_coordinates_x)
     numpy.savetxt(os.path.join(outdir, "Power_Density_at_Focus_coord_y.txt"), plot_coordinates_y)
     numpy.savetxt(os.path.join(outdir, "Power_Density_at_Focus.txt"), power_density)
-
-    app = QApplication(sys.argv)
 
     plot_power_density(plot_coordinates_x, plot_coordinates_y, total_power_density)
 
