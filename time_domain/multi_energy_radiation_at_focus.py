@@ -44,7 +44,7 @@ def calculate_multi_energy_radiation_at_focus(wfrEXY, optBL, resize=False, t0=ti
     return wfrEXY, wfrEXY_F
 
 def save_3D_wavefront(wfrEXY, filename):
-    outdir = os.path.join(os.getcwd(), "output/time_domain")
+    outdir = os.path.join(base_output_dir, "time_domain")
 
     if not os.path.exists(outdir): os.mkdir(outdir)
     print('   Saving wavefront data to a file ... ', end='')
@@ -62,7 +62,7 @@ def save_3D_wavefront(wfrEXY, filename):
         print("Wavefront not saved")
 
 def load_3D_wavefront(t0, filename):
-    outdir = os.path.join(os.getcwd(), "output/time_domain")
+    outdir = os.path.join(base_output_dir, "time_domain")
 
     print('   Loading wavefront data from a file ... ', end='')
 
@@ -110,7 +110,7 @@ def extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F, show_data
     if show_data: plot_data(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, plot_imaginary)
 
 def save_data_files(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf):
-    outdir = os.path.join(os.getcwd(), "output/time_domain")
+    outdir = os.path.join(base_output_dir, "time_domain")
 
     if not os.path.exists(outdir): os.mkdir(outdir)
 

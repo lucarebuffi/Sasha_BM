@@ -8,7 +8,7 @@ from silx.gui.plot import PlotWindow
 
 def plot_data_files(outdir=None, plot_imaginary=False):
 
-    outdir = os.path.join(os.getcwd(), "output/time_domain") if outdir is None else outdir
+    outdir = os.path.join(base_output_dir, "time_domain") if outdir is None else outdir
 
     if not os.path.exists(outdir): return
 
@@ -48,9 +48,9 @@ if __name__=="__main__":
     app = QApplication(sys.argv)
 
     try:
-        plot_data_files(outdir=os.path.join(os.getcwd(), sys.argv[1]), plot_imaginary=sys.argv[2]=="1")
+        plot_data_files(outdir=sys.argv[1], plot_imaginary=sys.argv[2]=="1")
     except:
-        try:    plot_data_files(outdir=os.path.join(os.getcwd(), sys.argv[1]))
+        try:    plot_data_files(outdir=sys.argv[1])
         except: plot_data_files()
 
     app.exec_()

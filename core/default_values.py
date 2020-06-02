@@ -1,8 +1,10 @@
 import numpy
 import scipy.constants as codata
 
-magnetic_field_file_name_input = "../data/monoPoleSquareProfile_8mmGap.dat"
-magnetic_field_file_name = "../data/monoPoleSquareProfile_8mmGap_srw.dat"
+magnetic_field_file_name_input = "/Users/lrebuffi/Box Sync/Luca_Xianbo_Share/Sasha/BM/data/monoPoleSquareProfile_8mmGap.dat"
+magnetic_field_file_name = "/Users/lrebuffi/Box Sync/Luca_Xianbo_Share/Sasha/BM/data/monoPoleSquareProfile_8mmGap_srw.dat"
+
+base_output_dir = "/Users/lrebuffi/Box Sync/Luca_Xianbo_Share/Sasha/BM/output"
 
 ring_electron_energy = 0.147 # GeV
 current_1_electron = 1.8125191290905425e-08 # A (current of 1 electron emitting on +-1/gamma)

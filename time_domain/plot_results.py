@@ -6,7 +6,7 @@ mpl.rc('figure', max_open_warning = 0)
 
 def plot_data_files(outdir=None, plot_imaginary=False):
 
-    outdir = os.path.join(os.getcwd(), "output/time_domain") if outdir is None else outdir
+    outdir = os.path.join(base_output_dir, "time_domain") if outdir is None else outdir
     if not os.path.exists(outdir): return
 
     arReEt, mesh   = srwl_uti_read_intens_ascii(os.path.join(outdir, "Re_E_in_time_domain.dat"))
@@ -60,7 +60,7 @@ if __name__=="__main__":
     if not srwl_uti_proc_is_master(): exit()
 
     try:
-        plot_data_files(outdir=os.path.join(os.getcwd(), sys.argv[1]), plot_imaginary=sys.argv[2]=="1")
+        plot_data_files(outdir=sys.argv[1], plot_imaginary=sys.argv[2]=="1")
     except:
-        try:    plot_data_files(outdir=os.path.join(os.getcwd(), sys.argv[1]))
+        try:    plot_data_files(outdir=sys.argv[1])
         except: plot_data_files()

@@ -5,7 +5,7 @@ from core.default_values import magnetic_field_file_name
 
 from frequency_domain.single_energy_radiation_from_source import calculate_initial_single_energy_radiation
 from frequency_domain.single_energy_radiation_at_focus import calculate_single_energy_radiation_at_focus
-from frequency_domain.plot_result import plot_power_density, plot_spectrum
+from frequency_domain.plot_results import plot_power_density, plot_spectrum
 
 def get_parameters(energy=None):
     if energy is None: return [[0, 0, 1.0, 1, 0, 1.0, 1.0, 1.0, 1.0, 0, 0.0, 0.0],
@@ -42,7 +42,7 @@ if __name__=="__main__":
     else:
         e_in  = 1
         e_fin = 81
-        n_e   = 801
+        n_e   = 81
 
     app = QApplication(sys.argv)
 
@@ -55,11 +55,12 @@ if __name__=="__main__":
     dim_y = 201
 
     # um in mm
-    plot_coordinates_x = numpy.linspace(-0.2, 0.2, dim_x)
-    plot_coordinates_y = numpy.linspace(-0.2, 0.2, dim_y)
+    plot_coordinates_x = numpy.linspace(-0.1, 0.1, dim_x)
+    plot_coordinates_y = numpy.linspace(-0.1, 0.1, dim_y)
 
     total_power_density = numpy.zeros((dim_x, dim_y))
-    spectrum            = numpy.zeros(n_e)
+    spectrum            = numpy.zeros((n_e, 2))
+    spectrum[:, 0]      = energies
 
     for energy, ie in zip(energies, range(n_e)):
         wfr = calculate_initial_single_energy_radiation(electron_beam, magnetic_field_container, energy=energy)
@@ -75,7 +76,7 @@ if __name__=="__main__":
         power_density = (intensity * 1e3 * delta_energy * codata.e) * 1e9     # nW/mm^2
 
         # cumulative quantities ##################################
-        spectrum[ie]   = spectral_flux
+        spectrum[ie, 1]   = spectral_flux
 
         # to cumulate we need the same spatial mesh
         interpolator  = RectBivariateSpline(x_coord, y_coord, power_density)
@@ -86,14 +87,15 @@ if __name__=="__main__":
 
         print("Energy", round(energy, 1), ", S.F.", round(spectral_flux, 2), "ph/s/0.1%BW, Power", round(power, 6), "nW, Peak P.D.", round(numpy.max(power_density), 4), "nW/mm^2")
 
-    outdir = os.path.join(os.getcwd().split("frequency_domain")[0], "output/frequency_domain")
+    outdir = os.path.join(base_output_dir, "frequency_domain")
     if not os.path.exists(outdir): os.mkdir(outdir)
 
+    numpy.savetxt(os.path.join(outdir, "Spectrum_at_focus.txt"),                       spectrum)
     numpy.savetxt(os.path.join(outdir, "Power_Density_at_Focus_coord_x.txt"), plot_coordinates_x)
     numpy.savetxt(os.path.join(outdir, "Power_Density_at_Focus_coord_y.txt"), plot_coordinates_y)
-    numpy.savetxt(os.path.join(outdir, "Power_Density_at_Focus.txt"), power_density)
+    numpy.savetxt(os.path.join(outdir, "Power_Density_at_Focus.txt"),         total_power_density)
 
-    plot_spectrum(energies, spectrum)
+    plot_spectrum(spectrum)
     plot_power_density(plot_coordinates_x, plot_coordinates_y, total_power_density)
 
     app.exec_()
