@@ -1,11 +1,16 @@
 import numpy
 
-from silx.gui.plot import Plot2D
+from silx.gui.plot import Plot2D, PlotWindow
+
+def plot_spectrum(energies, spectrum):
+    plot = PlotWindow(fit=True)
+    plot.addCurve(energies, spectrum)
+    plot.setGraphTitle("Spectrum used for Power Calculation")
+    plot.setGraphXLabel("Energy [eV]")
+    plot.setGraphYLabel("Spectral Flux [ph/s/0.1%BW]")
+    plot.show()
 
 def plot_power_density(x_coord, y_coord, power_density):
-    x_coord = x_coord*1000
-    y_coord = y_coord*1000
-
     origin = (x_coord[0], y_coord[0])
     scale = (x_coord[1] - x_coord[0], y_coord[1] - y_coord[0])
     area = scale[0]*scale[1]
@@ -40,6 +45,6 @@ def plot_power_density(x_coord, y_coord, power_density):
     plot_canvas.setActiveImage("Power Density")
     plot_canvas.setGraphXLabel("Horizontal Position [mm]")
     plot_canvas.setGraphYLabel("Vertical Position [mm]")
-    plot_canvas.setGraphTitle("Power Density - Total Power = " + str(power_density.sum()*area) + " W")
+    plot_canvas.setGraphTitle("Power Density [nW/mm^2]\nTotal Power = " + str(round(power_density.sum()*area, 6)) + " nW")
 
     plot_canvas.show()

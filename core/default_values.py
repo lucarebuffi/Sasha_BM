@@ -35,7 +35,7 @@ print("Initial Aperture: " + str(oe1_aperturex) + " x " + str(oe1_aperturey) + "
 oe1_aperture_nx = 142#284#142
 oe1_aperture_ny = 142#284#142
 
-source_parameters = [2, 1e-4, 0.0, 0.0, 50000, 1, 0.0]
+source_parameters = [2, 1e-2, 0.0, 0.0, 50000, 1, 0.0]
 
 def get_central_energy(wfr, energy=None):
     return 0.5 * (wfr.mesh.eStart + wfr.mesh.eFin) if energy is None else energy
