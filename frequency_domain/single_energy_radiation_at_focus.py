@@ -1,9 +1,9 @@
-from lib.electron_beam import get_electron_beam
-from lib.magnetic_structure import get_magnetic_field_container
-from lib.ideal_optical_system import *
-from lib.default_values import magnetic_field_file_name
+from core.electron_beam import get_electron_beam
+from core.magnetic_structure import get_magnetic_field_container
+from core.ideal_optical_system import *
+from core.default_values import magnetic_field_file_name
 
-from single_energy_radiation_from_source import calculate_initial_single_energy_radiation, plot_single_energy_radiation
+from frequency_domain.single_energy_radiation_from_source import calculate_initial_single_energy_radiation, plot_single_energy_radiation
 
 def calculate_single_energy_radiation_at_focus(wfr, optBL):
     srwl.PropagElecField(wfr, optBL)

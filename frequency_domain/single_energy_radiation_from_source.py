@@ -1,7 +1,7 @@
-from lib.srw_importer import *
-from lib.default_values import *
-from lib.electron_beam import get_electron_beam
-from lib.magnetic_structure import get_magnetic_field_container
+from core.srw_importer import *
+from core.default_values import *
+from core.electron_beam import get_electron_beam
+from core.magnetic_structure import get_magnetic_field_container
 
 def calculate_initial_single_energy_radiation(part_beam, magnetic_field_container,
                                               aperturex=oe1_aperturex,

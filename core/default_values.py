@@ -10,6 +10,8 @@ current_1_electron = 1.8125191290905425e-08 # A (current of 1 electron emitting 
 gamma = ring_electron_energy/(codata.electron_mass*codata.c**2/codata.e*1e-9)
 gamma_angle = 1/gamma
 
+print("Gamma angle", gamma_angle*1000, "mrad")
+
 spectrum_energy_from = 1
 spectrum_energy_to   = 121#181
 spectrum_energy_ne   = 120#180

@@ -1,7 +1,7 @@
-from lib.srw_importer import *
-from lib.default_values import *
-from lib.electron_beam import get_electron_beam
-from lib.magnetic_structure import get_magnetic_field_container
+from core.srw_importer import *
+from core.default_values import *
+from core.electron_beam import get_electron_beam
+from core.magnetic_structure import get_magnetic_field_container
 
 def calculate_spectrum(part_beam, magnetic_field_container,
                        eStart=spectrum_energy_from, eFin=spectrum_energy_to, ne=spectrum_energy_ne, x0=0.0, y0=0.0, zAperture=src_to_oe1,

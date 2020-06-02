@@ -1,4 +1,4 @@
-from lib.ideal_optical_system import *
+from core.ideal_optical_system import *
 from scipy.constants import c
 
 import matplotlib as mpl
@@ -8,7 +8,7 @@ from silx.gui.plot import PlotWindow
 
 def plot_data_files(outdir=None, plot_imaginary=False):
 
-    outdir = os.path.join(os.getcwd(), "output") if outdir is None else outdir
+    outdir = os.path.join(os.getcwd(), "output/time_domain") if outdir is None else outdir
 
     if not os.path.exists(outdir): return
 

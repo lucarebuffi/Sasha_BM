@@ -1,7 +1,7 @@
-from lib.srw_importer import *
-from lib.electron_beam import get_electron_beam
-from lib.magnetic_structure import get_magnetic_field_container
-from lib.default_values import magnetic_field_file_name, gamma_angle, gamma
+from core.srw_importer import *
+from core.electron_beam import get_electron_beam
+from core.magnetic_structure import get_magnetic_field_container
+from core.default_values import magnetic_field_file_name, gamma_angle, gamma
 import numpy
 from scipy.constants import c, e
 

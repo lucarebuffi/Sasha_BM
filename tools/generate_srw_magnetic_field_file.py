@@ -1,4 +1,4 @@
-from lib.default_values import magnetic_field_file_name_input, magnetic_field_file_name
+from core.default_values import magnetic_field_file_name_input, magnetic_field_file_name
 import numpy
 
 if __name__ == "__main__":

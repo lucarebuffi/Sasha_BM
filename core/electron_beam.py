@@ -1,5 +1,5 @@
-from lib.srw_importer import *
-from lib.default_values import *
+from core.srw_importer import *
+from core.default_values import *
 
 import scipy.constants as codata
 

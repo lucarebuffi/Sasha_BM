@@ -1,4 +1,4 @@
-from lib.srw_importer import *
+from core.srw_importer import *
 
 def AuxReadInMagFld3D(filePath, sCom):
     f = open(filePath, 'r')
