@@ -54,13 +54,14 @@ def plot_data_files(outdir=None):
     outdir = os.path.join(base_output_dir, "frequency_domain") if outdir is None else outdir
     if not os.path.exists(outdir): return
 
-    spectrum            = numpy.loadtxt(os.path.join(outdir, "Spectrum_at_focus.txt"))
+    #spectrum            = numpy.loadtxt(os.path.join(outdir, "Spectrum_at_focus.txt"))
     plot_coordinates_x  = numpy.loadtxt(os.path.join(outdir, "Power_Density_at_Focus_coord_x.txt"))
     plot_coordinates_y  = numpy.loadtxt(os.path.join(outdir, "Power_Density_at_Focus_coord_y.txt"))
     total_power_density = numpy.loadtxt(os.path.join(outdir, "Power_Density_at_Focus.txt"))
 
-    plot_spectrum(spectrum)
+    #plot_spectrum(spectrum)
     plot_power_density(plot_coordinates_x, plot_coordinates_y, total_power_density)
+
 
 from PyQt5.QtWidgets import QApplication
 import sys

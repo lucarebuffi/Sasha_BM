@@ -7,18 +7,6 @@ from frequency_domain.single_energy_radiation_from_source import calculate_initi
 from frequency_domain.single_energy_radiation_at_focus import calculate_single_energy_radiation_at_focus
 from frequency_domain.plot_results import plot_power_density, plot_spectrum
 
-def get_parameters(energy=None):
-    if energy is None: return [[0, 0, 1.0, 1, 0, 1.0, 1.0, 1.0, 1.0, 0, 0.0, 0.0],
-                               [0, 0, 1.0, 1, 0, 1.0, 1.0, 1.0, 1.0, 0, 0.0, 0.0],
-                               [0, 0, 1.0, 1, 0, 1.0, 5.0, 1.0, 5.0, 0, 0.0, 0.0],
-                               [0, 0, 1.0, 1, 0, 0.75, 2.0, 0.5, 2.0, 0, 0.0, 0.0]]
-
-    else:
-        return  [[0, 0, 1.0, 1, 0, 1.0, 1.0, 1.0, 1.0, 0, 0.0, 0.0],
-                 [0, 0, 1.0, 1, 0, 1.0, 1.0, 1.0, 1.0, 0, 0.0, 0.0],
-                 [0, 0, 1.0, 1, 0, 1.0, 5.0, 1.0, 5.0, 0, 0.0, 0.0],
-                 [0, 0, 1.0, 1, 0, 0.75, 2.0, 0.5, 2.0, 0, 0.0, 0.0]]
-
 def get_intensity(wfr):
     dim_x = wfr.mesh.nx
     dim_y = wfr.mesh.ny
@@ -40,15 +28,15 @@ if __name__=="__main__":
         e_fin = float(sys.argv[2])
         n_e   = float(sys.argv[3])
     else:
-        e_in  = 1
-        e_fin = 81
+        e_in  = 0.1
+        e_fin = 80.1
         n_e   = 81
 
     app = QApplication(sys.argv)
 
     energies      = numpy.linspace(e_in, e_fin, n_e)
     delta_energy  = energies[1] - energies[0]
-    electron_beam = get_electron_beam()
+    electron_beam = get_electron_beam(x0=5e-6)
     magnetic_field_container = get_magnetic_field_container(magnetic_field_file_name)
 
     dim_x = 201
@@ -62,9 +50,14 @@ if __name__=="__main__":
     spectrum            = numpy.zeros((n_e, 2))
     spectrum[:, 0]      = energies
 
+    source_parameters      = default_source_parameters
+    propagation_parameters = auto_parameters
+
     for energy, ie in zip(energies, range(n_e)):
-        wfr = calculate_initial_single_energy_radiation(electron_beam, magnetic_field_container, energy=energy)
-        wfr = calculate_single_energy_radiation_at_focus(wfr, get_beamline(parameters=get_parameters(energy)))
+        #source_parameters, propagation_parameters = get_parameters(energy)
+
+        wfr = calculate_initial_single_energy_radiation(electron_beam, magnetic_field_container, energy=energy, source_parameters=source_parameters)
+        wfr = calculate_single_energy_radiation_at_focus(wfr, get_beamline(parameters=propagation_parameters))
 
         x_coord    = numpy.linspace(wfr.mesh.xStart, wfr.mesh.xFin, wfr.mesh.nx) * 1000 # mm
         y_coord    = numpy.linspace(wfr.mesh.yStart, wfr.mesh.yFin, wfr.mesh.ny) * 1000 # mm

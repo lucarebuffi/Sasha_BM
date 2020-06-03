@@ -9,7 +9,7 @@ def calculate_initial_single_energy_radiation(part_beam, magnetic_field_containe
                                               nx=oe1_aperture_nx,
                                               ny=oe1_aperture_ny,
                                               zAperture=src_to_oe1,
-                                              energy=20):
+                                              energy=20, source_parameters=default_source_parameters):
     mesh = SRWLRadMesh(_eStart=energy,
                        _eFin=energy,
                        _ne=1,
@@ -47,9 +47,9 @@ if __name__=="__main__":
     if not srwl_uti_proc_is_master(): exit()
 
     try:    energy = float(sys.argv[1])
-    except: energy = 20
+    except: energy = 0.1
 
-    wfr = calculate_initial_single_energy_radiation(get_electron_beam(),
+    wfr = calculate_initial_single_energy_radiation(get_electron_beam(x0=0.005),
                                                     get_magnetic_field_container(magnetic_field_file_name),
                                                     energy=energy)
 

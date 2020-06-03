@@ -12,12 +12,15 @@ def calculate_single_energy_radiation_at_focus(wfr, optBL):
 if __name__=="__main__":
     if not srwl_uti_proc_is_master(): exit()
 
-    wfr = calculate_initial_single_energy_radiation(get_electron_beam(),
+    wfr = calculate_initial_single_energy_radiation(get_electron_beam(x0=5e-6),
                                                     get_magnetic_field_container(magnetic_field_file_name),
-                                                    energy=5)
+                                                    energy=0.1, source_parameters=default_source_parameters)
 
     plot_single_energy_radiation(wfr, where="Before", show=False)
 
-    wfr = calculate_single_energy_radiation_at_focus(wfr, get_beamline())
+    wfr = calculate_single_energy_radiation_at_focus(wfr, get_beamline(parameters=[[0, 0, 1.0, 0, 0, 1.0, 1.0, 1.0, 1.0, 0, 0.0, 0.0],
+                                                                                   [0, 0, 1.0, 1, 0, 1.0, 1.0, 1.0, 1.0, 0, 0.0, 0.0],
+                                                                                   [0, 0, 1.0, 0, 0, 1.0, 1.0, 1.0, 1.0, 0, 0.0, 0.0],
+                                                                                   [1, 1, 1.0, 1, 0, 1.0, 1.0, 1.0, 1.0, 0, 0.0, 0.0]]))
 
     plot_single_energy_radiation(wfr, where="After", show=True)

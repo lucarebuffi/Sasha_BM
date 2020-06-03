@@ -25,19 +25,19 @@ oe2_to_focus = 4.0915
 oe1_grazing_angle = numpy.radians(3.087)/2
 oe2_grazing_angle = numpy.radians(3.087)/2
 
+oe1_aperturex = src_to_oe1*numpy.tan(gamma_angle) #(+- 0.5/gamma)
+oe1_aperturey = oe1_aperturex
+
 #mirror_length = 1.2
 #oe1_aperturex = mirror_length*numpy.sin(oe1_grazing_angle)
 #oe1_aperturey = 0.05
 
-oe1_aperturex = src_to_oe1*numpy.tan(gamma_angle) #(+- 0.5/gamma)
-oe1_aperturey = oe1_aperturex
-
 print("Initial Aperture: " + str(oe1_aperturex) + " x " + str(oe1_aperturey) + " mm, at " + str(src_to_oe1) + " m")
 
-oe1_aperture_nx = 142#284#142
-oe1_aperture_ny = 142#284#142
+oe1_aperture_nx = 284#586#142
+oe1_aperture_ny = 284#586#142
 
-source_parameters = [2, 1e-2, 0.0, 0.0, 50000, 1, 0.0]
+default_source_parameters = [2, 1e-2, 0.0, 0.0, 20000, 1, 0.0]
 
 def get_central_energy(wfr, energy=None):
     return 0.5 * (wfr.mesh.eStart + wfr.mesh.eFin) if energy is None else energy
