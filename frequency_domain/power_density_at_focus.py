@@ -54,6 +54,8 @@ def run_script(argv):
     source_parameters      = default_source_parameters
     propagation_parameters = auto_parameters
 
+    accepted_delta = 10000 if delta_energy >= 1 else 5000 if delta_energy >= 0.1 else 1000
+
     for energy, ie in zip(energies, range(n_e)):
         #source_parameters, propagation_parameters = get_parameters(energy)
 
@@ -70,7 +72,8 @@ def run_script(argv):
             intensity[numpy.where(numpy.isnan(intensity))] = 0.0
             spectral_flux = intensity.sum() * pixel_area         # photons/s/0.1%BW
 
-            calculate = (spectral_flux == 0 or spectral_flux > 1e7)   # misterious SRW bug....
+            calculate = (spectral_flux == 0 or spectral_flux > 1e7)                                                # misterious SRW bug....
+            if not calculate and ie > 0: calculate = numpy.abs(spectral_flux - spectrum[ie-1, 1]) > accepted_delta # misterious SRW bug....
 
         power         = (spectral_flux * 1e3 * delta_energy * codata.e) * 1e9 # power in nW in the interval E + dE
         power_density = (intensity * 1e3 * delta_energy * codata.e) * 1e9     # nW/mm^2
@@ -85,7 +88,7 @@ def run_script(argv):
 
         total_power_density += power_density
 
-        print("Energy", round(energy, 1), ", S.F.", round(spectral_flux, 2), "ph/s/0.1%BW, Power", round(power, 6), "nW, Peak P.D.", round(numpy.max(power_density), 4), "nW/mm^2")
+        print("Energy", round(energy, 2), ", S.F.", round(spectral_flux, 2), "ph/s/0.1%BW, Power", round(power, 6), "nW, Peak P.D.", round(numpy.max(power_density), 4), "nW/mm^2")
 
     outdir = os.path.join(base_output_dir, "frequency_domain")
     if not os.path.exists(outdir): os.mkdir(outdir)
