@@ -1,3 +1,4 @@
+import time
 from core.electron_beam import get_electron_beam
 from core.magnetic_structure import get_magnetic_field_container
 from core.ideal_optical_system import *
@@ -20,19 +21,19 @@ from scipy.interpolate import RectBivariateSpline
 from PyQt5.QtWidgets import QApplication
 import sys
 
-if __name__=="__main__":
+def run_script(argv):
     if not srwl_uti_proc_is_master(): exit()
 
-    if len(sys.argv) == 4:
-        e_in  = float(sys.argv[1])
-        e_fin = float(sys.argv[2])
-        n_e   = float(sys.argv[3])
+    if len(argv) == 3:
+        e_in  = float(argv[0])
+        e_fin = float(argv[1])
+        n_e   = int(argv[2])
     else:
         e_in  = 0.1
         e_fin = 80.1
         n_e   = 81
 
-    app = QApplication(sys.argv)
+    app = QApplication([])
 
     energies      = numpy.linspace(e_in, e_fin, n_e)
     delta_energy  = energies[1] - energies[0]
@@ -56,15 +57,21 @@ if __name__=="__main__":
     for energy, ie in zip(energies, range(n_e)):
         #source_parameters, propagation_parameters = get_parameters(energy)
 
-        wfr = calculate_initial_single_energy_radiation(electron_beam, magnetic_field_container, energy=energy, source_parameters=source_parameters)
-        wfr = calculate_single_energy_radiation_at_focus(wfr, get_beamline(parameters=propagation_parameters))
+        calculate = True
+        while(calculate):
+            wfr = calculate_initial_single_energy_radiation(electron_beam, magnetic_field_container, energy=energy, source_parameters=source_parameters)
+            wfr = calculate_single_energy_radiation_at_focus(wfr, get_beamline(parameters=propagation_parameters))
 
-        x_coord    = numpy.linspace(wfr.mesh.xStart, wfr.mesh.xFin, wfr.mesh.nx) * 1000 # mm
-        y_coord    = numpy.linspace(wfr.mesh.yStart, wfr.mesh.yFin, wfr.mesh.ny) * 1000 # mm
-        pixel_area = (x_coord[1] - x_coord[0]) * (y_coord[1] - y_coord[0])              # mm^2
+            x_coord    = numpy.linspace(wfr.mesh.xStart, wfr.mesh.xFin, wfr.mesh.nx) * 1000 # mm
+            y_coord    = numpy.linspace(wfr.mesh.yStart, wfr.mesh.yFin, wfr.mesh.ny) * 1000 # mm
+            pixel_area = (x_coord[1] - x_coord[0]) * (y_coord[1] - y_coord[0])              # mm^2
 
-        intensity     = get_intensity(wfr)                                    # photons/s/mm^2/0.1%BW
-        spectral_flux = intensity.sum() * pixel_area                          # photons/s/0.1%BW
+            intensity     = get_intensity(wfr)                   # photons/s/mm^2/0.1%BW
+            intensity[numpy.where(numpy.isnan(intensity))] = 0.0
+            spectral_flux = intensity.sum() * pixel_area         # photons/s/0.1%BW
+
+            calculate = (spectral_flux == 0 or spectral_flux > 1e7)   # misterious SRW bug....
+
         power         = (spectral_flux * 1e3 * delta_energy * codata.e) * 1e9 # power in nW in the interval E + dE
         power_density = (intensity * 1e3 * delta_energy * codata.e) * 1e9     # nW/mm^2
 
@@ -74,7 +81,7 @@ if __name__=="__main__":
         # to cumulate we need the same spatial mesh
         interpolator  = RectBivariateSpline(x_coord, y_coord, power_density)
         power_density = interpolator(plot_coordinates_x, plot_coordinates_y)
-        power_density[numpy.where(numpy.logical_or(numpy.isnan(power_density), power_density < 0.0))] = 0.0
+        power_density[numpy.where(numpy.isnan(power_density))] = 0.0
 
         total_power_density += power_density
 
@@ -93,3 +100,5 @@ if __name__=="__main__":
 
     app.exec_()
 
+if __name__=="__main__":
+    run_script(sys.argv[1:])
