@@ -20,9 +20,10 @@ def AuxReadInMagFld3D(filePath, sCom):
 
     for i in range(totNp):
         curLineParts = f.readline().split('	')
-        locArBx[i] = float(curLineParts[0])
-        locArBy[i] = float(curLineParts[1])
-        locArBz[i] = float(curLineParts[2])
+        if len(curLineParts)==3:
+            locArBx[i] = float(curLineParts[0].strip())
+            locArBy[i] = float(curLineParts[1].strip())
+            locArBz[i] = float(curLineParts[2].strip())
     f.close()
     xRange = xStep
     if xNp > 1: xRange = (xNp - 1) * xStep

@@ -46,7 +46,7 @@ if __name__ == "__main__":
            "#1 #number of points vs Y\n" + \
            "#" + str(data[0, 0]) + " #initial Z position [m]\n" + \
            "#" + str(round(data[1, 0]-data[0, 0], 6)) + " #step of Z [m]\n" + \
-           "#" + str(data.shape[0]) + "#number of points vs Z\n"
+           "#" + str(data.shape[0]) + " #number of points vs Z\n"
 
     for i in range(data.shape[0]):
         text += "0.0\t" + str(round(data[i, 1], 8)) + "\t0.0\n"
@@ -65,9 +65,9 @@ if __name__ == "__main__":
            "#0.0 #initial Y position [m]\n" + \
            "#0.0 #step of Y [m]\n" + \
            "#1 #number of points vs Y\n" + \
-           "#" + str(data[0, 0]) + " #initial Z position [m]\n" + \
-           "#" + str(round(data[1, 0]-data[0, 0], 6)) + " #step of Z [m]\n" + \
-           "#" + str(data.shape[0]) + "#number of points vs Z\n"
+           "#" + str(data_1p[0, 0]) + " #initial Z position [m]\n" + \
+           "#" + str(round(data_1p[1, 0]-data_1p[0, 0], 6)) + " #step of Z [m]\n" + \
+           "#" + str(data_1p.shape[0]) + " #number of points vs Z\n"
 
     for i in range(data_1p.shape[0]):
         text += "0.0\t" + str(round(data_1p[i, 1], 8)) + "\t0.0\n"
