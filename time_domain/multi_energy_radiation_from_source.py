@@ -24,7 +24,7 @@ def calculate_initial_multi_energy_radiation(part_beam, magnetic_field_container
     wfr.mesh = mesh
     wfr.partBeam = part_beam
 
-    srwl.CalcElecFieldSR(wfr, 0, magnetic_field_container, source_parameters)
+    srwl.CalcElecFieldSR(wfr, 0, magnetic_field_container, default_source_parameters)
 
     return wfr
 
