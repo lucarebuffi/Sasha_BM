@@ -3,7 +3,7 @@ import numpy
 
 if __name__ == "__main__":
 
-    data = numpy.loadtxt(magnetic_field_file_name_input, skiprows=1)
+    data = numpy.loadtxt(magnetic_field_file_name_input, skiprows=0)
 
     from matplotlib import pyplot as plt
 
