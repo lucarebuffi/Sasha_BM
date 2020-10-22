@@ -2,7 +2,7 @@ import numpy
 import scipy.constants as codata
 
 magnetic_field_file_name_input = "/Users/lrebuffi/Box Sync/Luca_Xianbo_Share/Sasha/BM/data/monoPoleSquareProfile_8mmGap.dat"
-#magnetic_field_file_name = "/Users/lrebuffi/Box Sync/Luca_Xianbo_Share/Sasha/BM/data/monoPoleSquareProfile_8mmGap_srw.dat"
+magnetic_field_file_name = "/Users/lrebuffi/Box Sync/Luca_Xianbo_Share/Sasha/BM/data/monoPoleSquareProfile_8mmGap_srw.dat"
 magnetic_field_file_name = "/Users/lrebuffi/Box Sync/Luca_Xianbo_Share/Sasha/BM/data/wiggler_1pole_srw.dat"
 
 base_output_dir = "/Users/lrebuffi/Box Sync/Luca_Xianbo_Share/Sasha/BM/output"

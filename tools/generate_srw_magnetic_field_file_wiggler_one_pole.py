@@ -23,6 +23,7 @@ if __name__ == "__main__":
     data_1p_x = numpy.append(data_1p_x, data[761:, 0] - data[760, 0])
     data_1p_y = data[:281, 1]
     data_1p_y = numpy.append(data_1p_y, data[761:, 1])
+    data_1p_y[numpy.where(data_1p_y<0.0)] = 0.0
 
     data_1p = numpy.zeros((len(data_1p_x), 2))
     data_1p[:, 0] = data_1p_x[:]

@@ -9,15 +9,18 @@ def calculate_initial_single_energy_radiation(part_beam, magnetic_field_containe
                                               nx=oe1_aperture_nx,
                                               ny=oe1_aperture_ny,
                                               zAperture=src_to_oe1,
-                                              energy=20, source_parameters=default_source_parameters):
+                                              energy=20,
+                                              source_parameters=default_source_parameters,
+                                              shiftx=0.0,
+                                              shifty=0.0):
     mesh = SRWLRadMesh(_eStart=energy,
                        _eFin=energy,
                        _ne=1,
-                       _xStart=-aperturex / 2,
-                       _xFin=aperturex / 2,
+                       _xStart=shiftx-aperturex / 2,
+                       _xFin=shiftx+aperturex / 2,
                        _nx=nx,
-                       _yStart=-aperturey / 2,
-                       _yFin=aperturey / 2,
+                       _yStart=shifty-aperturey / 2,
+                       _yFin=shifty+aperturey / 2,
                        _ny=ny,
                        _zStart=zAperture)
 
@@ -49,8 +52,12 @@ if __name__=="__main__":
     try:    energy = float(sys.argv[1])
     except: energy = 0.1
 
-    wfr = calculate_initial_single_energy_radiation(get_electron_beam(x0=0.005),
+    try:    shiftx = float(sys.argv[2])
+    except: shiftx = 0.0
+
+    wfr = calculate_initial_single_energy_radiation(get_electron_beam(x0=0.0),
                                                     get_magnetic_field_container(magnetic_field_file_name),
-                                                    energy=energy)
+                                                    energy=energy,
+                                                    shiftx=shiftx)
 
     plot_single_energy_radiation(wfr)
