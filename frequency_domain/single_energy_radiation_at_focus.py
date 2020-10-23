@@ -12,9 +12,17 @@ def calculate_single_energy_radiation_at_focus(wfr, optBL):
 if __name__=="__main__":
     if not srwl_uti_proc_is_master(): exit()
 
-    wfr = calculate_initial_single_energy_radiation(get_electron_beam(x0=5e-6),
+    try:    energy = float(sys.argv[1])
+    except: energy = 6.7
+
+    try:    shiftx = float(sys.argv[2])
+    except: shiftx = 0.0
+
+    wfr = calculate_initial_single_energy_radiation(get_electron_beam(x0=2e-6),
                                                     get_magnetic_field_container(magnetic_field_file_name),
-                                                    energy=6.7, source_parameters=default_source_parameters)
+                                                    energy=energy,
+                                                    source_parameters=default_source_parameters,
+                                                    shiftx=shiftx)
 
     plot_single_energy_radiation(wfr, where="Before", show=False)
 

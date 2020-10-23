@@ -36,7 +36,7 @@ if __name__ == "__main__":
     plt.show()
 
     numpy.savetxt(magnetic_field_file_name_input + ".out", data) # for Shadow use
-    numpy.savetxt(magnetic_field_file_name_input + "_1pole_.out", data) # for Shadow use
+    numpy.savetxt(magnetic_field_file_name_input + ".1pole.out", data_1p) # for Shadow use
 
     text = "#Bx [T], By [T], Bz [T] on 3D mesh: inmost loop vs X (horizontal transverse position), outmost loop vs Z (longitudinal position)\n" + \
            "#0.0 #initial X position [m]\n" + \
