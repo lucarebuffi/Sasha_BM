@@ -168,6 +168,9 @@ if __name__=="__main__":
     try:    ne = int(sys.argv[2])
     except: ne = spectrum_energy_ne
 
+    try:    do_propagation = int(sys.argv[3]) == 1
+    except: do_propagation = True
+
     t0 = time.time()
 
     if not load_existing:
@@ -179,9 +182,14 @@ if __name__=="__main__":
                                                           ne=ne)
         print("done in", round(time.time()-t0, 3))
 
-        wfrEXY_T, wfrEXY_F = calculate_multi_energy_radiation_at_focus(wfrEXY, get_beamline(), resize=True, t0=t0)
+        print("Check values", max(wfrEXY.arEx), max(wfrEXY.arEy))
+
+        if do_propagation:
+            wfrEXY_T, wfrEXY_F = calculate_multi_energy_radiation_at_focus(wfrEXY, get_beamline(), resize=False, t0=t0)
+
+            extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F)
     else:
         wfrEXY_T = load_3D_wavefront(t0=t0, filename=WAVEFRONT_T_3D_FILE)
         wfrEXY_F = load_3D_wavefront(t0=time.time(), filename=WAVEFRONT_F_3D_FILE)
 
-    extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F)
+        extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F)

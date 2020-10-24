@@ -13,6 +13,7 @@ current_1_electron = 1.8125191290905425e-08 # A (current of 1 electron emitting 
 gamma = ring_electron_energy/(codata.electron_mass*codata.c**2/codata.e*1e-9)
 gamma_angle = 1/gamma
 
+print("Gamma", gamma)
 print("Gamma angle", gamma_angle*1000, "mrad")
 
 spectrum_energy_from = 1
@@ -38,7 +39,7 @@ print("Initial Aperture: " + str(oe1_aperturex) + " x " + str(oe1_aperturey) + "
 oe1_aperture_nx = 284#586#142
 oe1_aperture_ny = 284#586#142
 
-default_source_parameters = [2, 1e-2, 0.0, 0.0, 20000, 1, 0.0]
+default_source_parameters = [2, 0.01, 0.0, 0.0, 50000, 1, 0.0]
 
 def get_central_energy(wfr, energy=None):
     return 0.5 * (wfr.mesh.eStart + wfr.mesh.eFin) if energy is None else energy

@@ -39,6 +39,8 @@ def plot_single_energy_radiation(wfr, energy=None, where="Before", show=True):
     arI = array('f', [0] * wfr.mesh.nx * wfr.mesh.ny)
     srwl.CalcIntFromElecField(arI, wfr, 6, 0, 3, energy, 0, 0)
 
+    print("max intensity S.E.: ", max(arI))
+
     plotMesh0x = [1000 * wfr.mesh.xStart, 1000 * wfr.mesh.xFin, wfr.mesh.nx]
     plotMesh0y = [1000 * wfr.mesh.yStart, 1000 * wfr.mesh.yFin, wfr.mesh.ny]
     uti_plot2d1d(arI, plotMesh0x, plotMesh0y, labels=['Horizontal Position [mm]', 'Vertical Position [mm]', 'Intensity ' + where + ' Propagation, E=' + str(energy)])
