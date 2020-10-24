@@ -13,7 +13,7 @@ if __name__=="__main__":
     if not srwl_uti_proc_is_master(): exit()
 
     try:    energy = float(sys.argv[1])
-    except: energy = 20
+    except: energy = 200
 
     try:    shiftx = float(sys.argv[2])
     except: shiftx = 0.0
@@ -28,7 +28,7 @@ if __name__=="__main__":
 
     wfr = calculate_single_energy_radiation_at_focus(wfr, get_beamline(parameters=[[0, 0, 1.0, 0, 0, 1.0, 1.0, 1.0, 1.0, 0, 0.0, 0.0],
                                                                                    [0, 0, 1.0, 1, 0, 1.0, 1.0, 1.0, 1.0, 0, 0.0, 0.0],
-                                                                                   [0, 0, 1.0, 0, 0, 1.0, 1.0, 1.0, 1.0, 0, 0.0, 0.0],
+                                                                                   [0, 0, 1.0, 0, 0, 1.0, 4.0, 1.0, 4.0, 0, 0.0, 0.0],
                                                                                    [1, 1, 1.0, 1, 0, 1.0, 1.0, 1.0, 1.0, 0, 0.0, 0.0]]))
 
     plot_single_energy_radiation(wfr, where="After", show=True)
