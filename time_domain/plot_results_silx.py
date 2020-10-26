@@ -34,8 +34,8 @@ def plot_data(arReEt, arImEt, arAmpEt, arPhiEt, arPowt, arPowDt, arIntf, plot_im
         plot_array(arImEt, 'Imaginary part of Electric Field in Time Domain', 'ct [\u03bcm]', 'Im(E) [V/mm]')
 
     plot_array(arAmpEt, 'Amplitude of Electric Field in Time Domain', 'ct [\u03bcm]', 'AmplitudeE) [V/mm]')
-    plot_array(arPhiEt, 'Phase of Electric Field in Time Domain', 'ct [\u03bcm]', 'Phi(E) [radians]')
-    plot_array(arPowt, 'Power in Time Domain', 'ct [\u03bcm]', 'Power [W]')
+    #plot_array(arPhiEt, 'Phase of Electric Field in Time Domain', 'ct [\u03bcm]', 'Phi(E) [radians]')
+    #plot_array(arPowt, 'Power in Time Domain', 'ct [\u03bcm]', 'Power [W]')3
     plot_array(arPowDt, 'Power Density (On Axis) in Time Domain', 'ct [\u03bcm]', 'Power Density [W/mm^2]')
     plot_array(arIntf, 'Flux Density (On Axis) in Frequency Domain', 'E [eV]', 'Flux Density [ph/s/mm^2/.1%BW]')
 

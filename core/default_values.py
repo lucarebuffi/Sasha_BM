@@ -17,8 +17,8 @@ print("Gamma", gamma)
 print("Gamma angle", gamma_angle*1000, "mrad")
 
 spectrum_energy_from = 1
-spectrum_energy_to   = 181
-spectrum_energy_ne   = 180
+spectrum_energy_to   = 301
+spectrum_energy_ne   = 300
 
 src_to_oe1 = 4.0915
 oe1_to_oe2 = 8.027
