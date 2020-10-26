@@ -20,6 +20,11 @@ def calculate_multi_energy_radiation_at_focus(wfrEXY, optBL, resize=False, t0=ti
     print("done in", round(time.time()-t0, 3), "s")
 
     wfrEXY_F = cp_deepcopy(wfrEXY)
+    # for frequency calculations
+    wfrEXY_F.unitElFld = 1
+
+    # for time domain calculations
+    wfrEXY.unitElFld = 2
 
     print("Resizing in Frequency domain")
     t0 = time.time()
@@ -74,21 +79,25 @@ def load_3D_wavefront(t0, filename):
 
     return wfrEXY
 
-def extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F, show_data=True, save_data=True, plot_imaginary=False):
+def extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F, show_data=True, save_data=True, plot_imaginary=False, polarization="s"):
+    if polarization == "s": param_pol = 0
+    elif polarization == "p": param_pol = 1
+    else: param_pol = 6
+
     mesh  = wfrEXY_T.mesh
     meshf = wfrEXY_F.mesh
 
     arReEt = array('f', [0] * mesh.ne)
-    srwl.CalcIntFromElecField(arReEt, wfrEXY_T, 0, 5, 0, 0.0, 0.0, 0.0)
+    srwl.CalcIntFromElecField(arReEt, wfrEXY_T, param_pol, 5, 0, 0.0, 0.0, 0.0)
 
     arImEt = array('f', [0] * mesh.ne)
-    srwl.CalcIntFromElecField(arImEt, wfrEXY_T, 0, 6, 0, 0.0, 0.0, 0.0)
+    srwl.CalcIntFromElecField(arImEt, wfrEXY_T, param_pol, 6, 0, 0.0, 0.0, 0.0)
 
     arPowt = array('f', [0] * mesh.ne)
-    srwl.CalcIntFromElecField(arPowt, wfrEXY_T, 0, 2, 0, 0.0, 0.0, 0.0)
+    srwl.CalcIntFromElecField(arPowt, wfrEXY_T, param_pol, 2, 0, 0.0, 0.0, 0.0)
 
     arPowDt = array('f', [0] * mesh.ne)
-    srwl.CalcIntFromElecField(arPowDt, wfrEXY_T, 0, 0, 0, 0.0, 0.0, 0.0)
+    srwl.CalcIntFromElecField(arPowDt, wfrEXY_T, param_pol, 0, 0, 0.0, 0.0, 0.0)
 
     arAmpEt   = array('f', [0] * mesh.ne)
     arPhiEt   = array('f', [0] * mesh.ne)
@@ -104,42 +113,42 @@ def extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F, show_data
         arPowDt[ie]   = arPowDt[ie] * codata.e * 1000 * (meshf.eStart + ie*energy_step)
 
     arIntf = array('f', [0] * wfrEXY_F.mesh.ne)
-    srwl.CalcIntFromElecField(arIntf, wfrEXY_F, 6, 0, 0, meshf.eStart, 0, 0)
+    srwl.CalcIntFromElecField(arIntf, wfrEXY_F, param_pol, 0, 0, meshf.eStart, 0, 0)
 
-    if save_data: save_data_files(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf)
-    if show_data: plot_data(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, plot_imaginary)
+    if save_data: save_data_files(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, polarization)
+    if show_data: plot_data(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, plot_imaginary, polarization)
 
-def save_data_files(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf):
+def save_data_files(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, polarization):
     outdir = os.path.join(base_output_dir, "time_domain")
 
     if not os.path.exists(outdir): os.mkdir(outdir)
 
-    try:    srwl_uti_save_intens_ascii(arReEt, mesh, os.path.join(outdir, "Re_E_in_time_domain.dat"), 0)
+    try:    srwl_uti_save_intens_ascii(arReEt, mesh, os.path.join(outdir, "Re_E_in_time_domain_" + polarization + ".dat"), 0)
     except: pass
 
-    try:    srwl_uti_save_intens_ascii(arImEt, mesh, os.path.join(outdir, "Im_E_in_time_domain.dat"), 0)
+    try:    srwl_uti_save_intens_ascii(arImEt, mesh, os.path.join(outdir, "Im_E_in_time_domain_" + polarization + ".dat"), 0)
     except: pass
 
-    try:    srwl_uti_save_intens_ascii(arAmpEt, mesh, os.path.join(outdir, "Amp_E_in_time_domain.dat"), 0)
+    try:    srwl_uti_save_intens_ascii(arAmpEt, mesh, os.path.join(outdir, "Amp_E_in_time_domain_" + polarization + ".dat"), 0)
     except: pass
 
-    try:    srwl_uti_save_intens_ascii(arPhiEt, mesh, os.path.join(outdir, "Phi_E_in_time_domain.dat"), 0)
+    try:    srwl_uti_save_intens_ascii(arPhiEt, mesh, os.path.join(outdir, "Phi_E_in_time_domain_" + polarization + ".dat"), 0)
     except: pass
 
-    try:    srwl_uti_save_intens_ascii(arPowt, mesh, os.path.join(outdir, "Power_in_time_domain.dat"), 0)
+    try:    srwl_uti_save_intens_ascii(arPowt, mesh, os.path.join(outdir, "Power_in_time_domain_" + polarization + ".dat"), 0)
     except: pass
 
-    try:    srwl_uti_save_intens_ascii(arPowDt, mesh, os.path.join(outdir, "Power_Density_in_time_domain.dat"), 0)
+    try:    srwl_uti_save_intens_ascii(arPowDt, mesh, os.path.join(outdir, "Power_Density_in_time_domain_" + polarization + ".dat"), 0)
     except: pass
 
-    try:    srwl_uti_save_intens_ascii(arIntf, meshf, os.path.join(os.path.join(os.getcwd(), "output"), "Int_in_frequency_domain.dat"), 0)
+    try:    srwl_uti_save_intens_ascii(arIntf, meshf, os.path.join(outdir, "Int_in_frequency_domain_" + polarization + ".dat"), 0)
     except: pass
 
-    save_numpy_format(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, outdir)
+    save_numpy_format(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, outdir, polarization)
 
 from scipy.constants import c
 
-def save_numpy_format(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, outdir):
+def save_numpy_format(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, outdir, polarization):
     factor = c * 1e6  # to micron (c*t)
 
     def create_array(ar, mesh):
@@ -149,13 +158,13 @@ def save_numpy_format(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, a
 
         return np_array
 
-    numpy.savetxt(os.path.join(outdir, "Re_E_in_time_domain.txt"), create_array(arReEt, mesh))
-    numpy.savetxt(os.path.join(outdir, "Im_E_in_time_domain.txt"), create_array(arImEt, mesh))
-    numpy.savetxt(os.path.join(outdir, "Amp_E_in_time_domain.txt"), create_array(arAmpEt, mesh))
-    numpy.savetxt(os.path.join(outdir, "Phi_E_in_time_domain.txt"), create_array(arPhiEt, mesh))
-    numpy.savetxt(os.path.join(outdir, "Power_in_time_domain.txt"), create_array(arPowt, mesh))
-    numpy.savetxt(os.path.join(outdir, "Power_Density_in_time_domain.txt"), create_array(arPowDt, mesh))
-    numpy.savetxt(os.path.join(outdir, "Int_in_frequency_domain.txt"), create_array(arIntf, meshf))
+    numpy.savetxt(os.path.join(outdir, "Re_E_in_time_domain_" + polarization + ".txt"), create_array(arReEt, mesh))
+    numpy.savetxt(os.path.join(outdir, "Im_E_in_time_domain_" + polarization + ".txt"), create_array(arImEt, mesh))
+    numpy.savetxt(os.path.join(outdir, "Amp_E_in_time_domain_" + polarization + ".txt"), create_array(arAmpEt, mesh))
+    numpy.savetxt(os.path.join(outdir, "Phi_E_in_time_domain_" + polarization + ".txt"), create_array(arPhiEt, mesh))
+    numpy.savetxt(os.path.join(outdir, "Power_in_time_domain_" + polarization + ".txt"), create_array(arPowt, mesh))
+    numpy.savetxt(os.path.join(outdir, "Power_Density_in_time_domain_" + polarization + ".txt"), create_array(arPowDt, mesh))
+    numpy.savetxt(os.path.join(outdir, "Int_in_frequency_domain_" + polarization + ".txt"), create_array(arIntf, meshf))
 
 import sys
 
@@ -187,9 +196,11 @@ if __name__=="__main__":
         if do_propagation:
             wfrEXY_T, wfrEXY_F = calculate_multi_energy_radiation_at_focus(wfrEXY, get_beamline(), resize=False, t0=t0)
 
-            extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F)
+            extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F, polarization="s")
+            extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F, polarization="p")
     else:
         wfrEXY_T = load_3D_wavefront(t0=t0, filename=WAVEFRONT_T_3D_FILE)
         wfrEXY_F = load_3D_wavefront(t0=time.time(), filename=WAVEFRONT_F_3D_FILE)
 
-        extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F)
+        extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F, polarization="s")
+        extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F, polarization="p")
