@@ -168,16 +168,17 @@ def save_numpy_format(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, a
 
 import sys
 
-if __name__=="__main__":
+
+def run_script(argv):
     if not srwl_uti_proc_is_master(): exit()
 
-    try:    load_existing = int(sys.argv[1]) == 1
+    try:    load_existing = int(argv[0]) == 1
     except: load_existing = False
 
-    try:    ne = int(sys.argv[2])
+    try:    ne = int(argv[1])
     except: ne = spectrum_energy_ne
 
-    try:    do_propagation = int(sys.argv[3]) == 1
+    try:    do_propagation = int(argv[2]) == 1
     except: do_propagation = True
 
     t0 = time.time()
@@ -204,3 +205,6 @@ if __name__=="__main__":
 
         extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F, polarization="s")
         extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F, polarization="p")
+
+if __name__=="__main__":
+    run_script(sys.argv[1:])
