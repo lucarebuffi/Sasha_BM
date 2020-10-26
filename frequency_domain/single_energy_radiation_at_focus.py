@@ -13,7 +13,7 @@ if __name__=="__main__":
     if not srwl_uti_proc_is_master(): exit()
 
     try:    energy = float(sys.argv[1])
-    except: energy = 300
+    except: energy = 350
 
     try:    shiftx = float(sys.argv[2])
     except: shiftx = 0.0
