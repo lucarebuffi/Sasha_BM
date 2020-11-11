@@ -17,8 +17,8 @@ print("Gamma", gamma)
 print("Gamma angle", gamma_angle*1000, "mrad")
 
 spectrum_energy_from = 1
-spectrum_energy_to   = 351
-spectrum_energy_ne   = 350
+spectrum_energy_to   = 100#351
+spectrum_energy_ne   = 20#350
 
 src_to_oe1 = 4.0915
 oe1_to_oe2 = 8.027
@@ -27,7 +27,7 @@ oe2_to_focus = 4.0915
 oe1_grazing_angle = numpy.radians(3.087)/2
 oe2_grazing_angle = numpy.radians(3.087)/2
 
-oe1_aperturex = src_to_oe1*numpy.tan(gamma_angle) #(+- 0.5/gamma)
+oe1_aperturex = src_to_oe1*numpy.tan(gamma_angle)  #(+- 0.5/gamma)
 oe1_aperturey = oe1_aperturex
 
 #mirror_length = 1.2
@@ -36,8 +36,8 @@ oe1_aperturey = oe1_aperturex
 
 print("Initial Aperture: " + str(oe1_aperturex) + " x " + str(oe1_aperturey) + " mm, at " + str(src_to_oe1) + " m")
 
-oe1_aperture_nx = 284#586#142
-oe1_aperture_ny = 284#586#142
+oe1_aperture_nx = 300#586#142
+oe1_aperture_ny = 300#586#142
 
 default_source_parameters = [2, 0.01, 0.0, 0.0, 50000, 1, 0.0]
 

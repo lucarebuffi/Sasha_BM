@@ -189,7 +189,9 @@ def run_script(argv):
                                                           get_magnetic_field_container(magnetic_field_file_name),
                                                           energy_from=spectrum_energy_from,
                                                           energy_to=spectrum_energy_to,
-                                                          ne=ne)
+                                                          ne=ne,
+                                                          aperturex=0.015,
+                                                          aperturey=0.015)
         print("done in", round(time.time()-t0, 3))
 
         print("Check values", max(wfrEXY.arEx), max(wfrEXY.arEy))

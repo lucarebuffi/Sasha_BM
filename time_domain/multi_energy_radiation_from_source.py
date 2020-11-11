@@ -50,7 +50,9 @@ if __name__=="__main__":
                                                       get_magnetic_field_container(magnetic_field_file_name),
                                                       energy_from=1,
                                                       energy_to=121,
-                                                      ne=120)
+                                                      ne=120,
+                                                      aperturex=0.015,
+                                                      aperturey=0.015)
 
     check_electric_field(wfrEXY, x0=oe1_aperturex/2, show=True)
 
