@@ -20,12 +20,8 @@ def calculate_multi_energy_radiation_at_focus(wfrEXY, optBL, resize=False, t0=ti
     print("done in", round(time.time()-t0, 3), "s")
 
     wfrEXY_F = cp_deepcopy(wfrEXY)
-    # for frequency calculations
-    wfrEXY_F.unitElFld = 1
 
     # for time domain calculations
-    wfrEXY.unitElFld = 2
-
     print("Resizing in Frequency domain")
     t0 = time.time()
     srwl.ResizeElecField(wfrEXY, "f", [0, 2, 1])

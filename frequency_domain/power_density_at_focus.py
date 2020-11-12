@@ -57,8 +57,6 @@ def run_script(argv):
     accepted_delta = 10000 if delta_energy >= 1 else 5000 if delta_energy >= 0.1 else 1000
 
     for energy, ie in zip(energies, range(n_e)):
-        #source_parameters, propagation_parameters = get_parameters(energy)
-
         calculate = True
         while(calculate):
             wfr = calculate_initial_single_energy_radiation(electron_beam, magnetic_field_container, energy=energy, source_parameters=source_parameters)
@@ -72,8 +70,9 @@ def run_script(argv):
             intensity[numpy.where(numpy.isnan(intensity))] = 0.0
             spectral_flux = intensity.sum() * pixel_area         # photons/s/0.1%BW
 
-            calculate = (spectral_flux == 0 or spectral_flux > 1e7)                                                # misterious SRW bug....
-            if not calculate and ie > 0: calculate = numpy.abs(spectral_flux - spectrum[ie-1, 1]) > accepted_delta # misterious SRW bug....
+            calculate = False
+            #calculate = (spectral_flux == 0 or spectral_flux > 1e7)                                                # misterious SRW bug....
+            #if not calculate and ie > 0: calculate = numpy.abs(spectral_flux - spectrum[ie-1, 1]) > accepted_delta # misterious SRW bug....
 
         power         = (spectral_flux * 1e3 * delta_energy * codata.e) * 1e9 # power in nW in the interval E + dE
         power_density = (intensity * 1e3 * delta_energy * codata.e) * 1e9     # nW/mm^2
