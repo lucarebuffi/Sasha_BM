@@ -12,13 +12,13 @@ def plot_data_files(outdir=None, plot_imaginary=False):
 
     if not os.path.exists(outdir): return
 
-    arReEt   = numpy.loadtxt(os.path.join(outdir, "Re_E_in_time_domain.txt"))
-    arImEt   = numpy.loadtxt(os.path.join(outdir, "Im_E_in_time_domain.txt"))
-    arAmpEt  = numpy.loadtxt(os.path.join(outdir, "Amp_E_in_time_domain.txt"))
-    arPhiEt  = numpy.loadtxt(os.path.join(outdir, "Phi_E_in_time_domain.txt"))
-    arPowt   = numpy.loadtxt(os.path.join(outdir, "Power_in_time_domain.txt"))
-    arPowDt  = numpy.loadtxt(os.path.join(outdir, "Power_Density_in_time_domain.txt"))
-    arIntf   = numpy.loadtxt(os.path.join(outdir, "Int_in_frequency_domain.txt"))
+    arReEt   = numpy.loadtxt(os.path.join(outdir, "Re_E_in_time_domain_s.txt"))
+    arImEt   = numpy.loadtxt(os.path.join(outdir, "Im_E_in_time_domain_s.txt"))
+    arAmpEt  = numpy.loadtxt(os.path.join(outdir, "Amp_E_in_time_domain_s.txt"))
+    arPhiEt  = numpy.loadtxt(os.path.join(outdir, "Phi_E_in_time_domain_s.txt"))
+    arPowt   = numpy.loadtxt(os.path.join(outdir, "Power_in_time_domain_s.txt"))
+    arPowDt  = numpy.loadtxt(os.path.join(outdir, "Power_Density_in_time_domain_s.txt"))
+    arIntf   = numpy.loadtxt(os.path.join(outdir, "Int_in_frequency_domain_s.txt"))
 
     plot_data(arReEt, arImEt, arAmpEt, arPhiEt, arPowt, arPowDt, arIntf, plot_imaginary)
 
@@ -36,8 +36,8 @@ def plot_data(arReEt, arImEt, arAmpEt, arPhiEt, arPowt, arPowDt, arIntf, plot_im
     plot_array(arAmpEt, 'Amplitude of Electric Field in Time Domain', 'ct [\u03bcm]', 'AmplitudeE) [V/mm]')
     #plot_array(arPhiEt, 'Phase of Electric Field in Time Domain', 'ct [\u03bcm]', 'Phi(E) [radians]')
     #plot_array(arPowt, 'Power in Time Domain', 'ct [\u03bcm]', 'Power [W]')3
-    plot_array(arPowDt, 'Power Density (On Axis) in Time Domain', 'ct [\u03bcm]', 'Power Density [W/mm^2]')
-    plot_array(arIntf, 'Flux Density (On Axis) in Frequency Domain', 'E [eV]', 'Flux Density [ph/s/mm^2/.1%BW]')
+    #plot_array(arPowDt, 'Power Density (On Axis) in Time Domain', 'ct [\u03bcm]', 'Power Density [W/mm^2]')
+    #plot_array(arIntf, 'Flux Density (On Axis) in Frequency Domain', 'E [eV]', 'Flux Density [ph/s/mm^2/.1%BW]')
 
 from PyQt5.QtWidgets import QApplication
 import sys

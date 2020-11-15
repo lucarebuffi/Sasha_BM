@@ -181,7 +181,7 @@ def run_script(argv):
 
     if not load_existing:
         print("Calculating 3D E-field on " + str(ne) + " energy points, in the range [" + str(spectrum_energy_from) + ", " + str(spectrum_energy_to) + "]")
-        wfrEXY = calculate_initial_multi_energy_radiation(get_electron_beam(),
+        wfrEXY = calculate_initial_multi_energy_radiation(get_electron_beam(x0=3e-6),
                                                           get_magnetic_field_container(magnetic_field_file_name),
                                                           energy_from=spectrum_energy_from,
                                                           energy_to=spectrum_energy_to,

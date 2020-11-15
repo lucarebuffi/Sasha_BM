@@ -55,7 +55,7 @@ def plot_data(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, m
                units=['\u03bcm', 'W'])
 
     uti_plot1d(arPowDt, plot_range,
-               labels=['ct', 'Power Density', 'Power Density (On Axis) in Time Domain'],
+               labels=['ct', 'Power Density', 'Power Density (On Axis) in Time Domain (Pol:' + polarization + ')'],
                units=['\u03bcm', 'W/mm^2'])
 
     uti_plot1d(arIntf, plot_range_f,
