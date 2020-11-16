@@ -19,8 +19,6 @@ def calculate_multi_energy_radiation_at_focus(wfrEXY, optBL, resize=False, t0=ti
     srwl.PropagElecField(wfrEXY, optBL)
     print("done in", round(time.time()-t0, 3), "s")
 
-    wfrEXY_F = cp_deepcopy(wfrEXY)
-
     # for time domain calculations
     print("Resizing in Frequency domain")
     t0 = time.time()
@@ -39,10 +37,9 @@ def calculate_multi_energy_radiation_at_focus(wfrEXY, optBL, resize=False, t0=ti
         srwl.ResizeElecField(wfrEXY, "t", [0, 0.5, 1])
         print("done in", round(time.time()-t0, 3), "s")
 
-    save_3D_wavefront(wfrEXY,   filename=WAVEFRONT_T_3D_FILE)
-    save_3D_wavefront(wfrEXY_F, filename=WAVEFRONT_F_3D_FILE)
+    save_3D_wavefront(wfrEXY, filename=WAVEFRONT_T_3D_FILE)
 
-    return wfrEXY, wfrEXY_F
+    return wfrEXY
 
 def save_3D_wavefront(wfrEXY, filename):
     outdir = os.path.join(base_output_dir, "time_domain")
@@ -75,13 +72,12 @@ def load_3D_wavefront(t0, filename):
 
     return wfrEXY
 
-def extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F, show_data=True, save_data=True, plot_imaginary=False, polarization="s"):
+def extract_data_multi_electron_radiation_at_focus(wfrEXY_T, show_data=True, save_data=True, plot_imaginary=False, polarization="s"):
     if polarization == "s": param_pol = 0
     elif polarization == "p": param_pol = 1
     else: param_pol = 6
 
     mesh  = wfrEXY_T.mesh
-    meshf = wfrEXY_F.mesh
 
     arReEt = array('f', [0] * mesh.ne)
     srwl.CalcIntFromElecField(arReEt, wfrEXY_T, param_pol, 5, 0, 0.0, 0.0, 0.0)
@@ -98,23 +94,16 @@ def extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F, show_data
     arAmpEt   = array('f', [0] * mesh.ne)
     arPhiEt   = array('f', [0] * mesh.ne)
 
-    energy_step = (meshf.eFin - meshf.eStart)/meshf.ne
-
     for ie in range(mesh.ne):
         Et_ie = arReEt[ie] + 1.0j*arImEt[ie]
 
         arPhiEt[ie]   = numpy.angle(Et_ie)
         arAmpEt[ie]   = numpy.abs(Et_ie)
-        arPowt[ie]    = arPowt[ie]  * codata.e * 1000 * (meshf.eStart + ie*energy_step)
-        arPowDt[ie]   = arPowDt[ie] * codata.e * 1000 * (meshf.eStart + ie*energy_step)
 
-    arIntf = array('f', [0] * wfrEXY_F.mesh.ne)
-    srwl.CalcIntFromElecField(arIntf, wfrEXY_F, param_pol, 0, 0, meshf.eStart, 0, 0)
+    if save_data: save_data_files(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, polarization)
+    if show_data: plot_data(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, plot_imaginary, polarization)
 
-    if save_data: save_data_files(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, polarization)
-    if show_data: plot_data(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, plot_imaginary, polarization)
-
-def save_data_files(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, polarization):
+def save_data_files(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, polarization):
     outdir = os.path.join(base_output_dir, "time_domain")
 
     if not os.path.exists(outdir): os.mkdir(outdir)
@@ -137,14 +126,11 @@ def save_data_files(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arI
     try:    srwl_uti_save_intens_ascii(arPowDt, mesh, os.path.join(outdir, "Power_Density_in_time_domain_" + polarization + ".dat"), 0)
     except: pass
 
-    try:    srwl_uti_save_intens_ascii(arIntf, meshf, os.path.join(outdir, "Int_in_frequency_domain_" + polarization + ".dat"), 0)
-    except: pass
-
-    save_numpy_format(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, outdir, polarization)
+    save_numpy_format(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, outdir, polarization)
 
 from scipy.constants import c
 
-def save_numpy_format(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, outdir, polarization):
+def save_numpy_format(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, outdir, polarization):
     factor = c * 1e6  # to micron (c*t)
 
     def create_array(ar, mesh):
@@ -160,7 +146,6 @@ def save_numpy_format(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, a
     numpy.savetxt(os.path.join(outdir, "Phi_E_in_time_domain_" + polarization + ".txt"), create_array(arPhiEt, mesh))
     numpy.savetxt(os.path.join(outdir, "Power_in_time_domain_" + polarization + ".txt"), create_array(arPowt, mesh))
     numpy.savetxt(os.path.join(outdir, "Power_Density_in_time_domain_" + polarization + ".txt"), create_array(arPowDt, mesh))
-    numpy.savetxt(os.path.join(outdir, "Int_in_frequency_domain_" + polarization + ".txt"), create_array(arIntf, meshf))
 
 import sys
 
@@ -181,7 +166,7 @@ def run_script(argv):
 
     if not load_existing:
         print("Calculating 3D E-field on " + str(ne) + " energy points, in the range [" + str(spectrum_energy_from) + ", " + str(spectrum_energy_to) + "]")
-        wfrEXY = calculate_initial_multi_energy_radiation(get_electron_beam(x0=3e-6),
+        wfrEXY = calculate_initial_multi_energy_radiation(get_electron_beam(x0=-2e-6),
                                                           get_magnetic_field_container(magnetic_field_file_name),
                                                           energy_from=spectrum_energy_from,
                                                           energy_to=spectrum_energy_to,
@@ -193,16 +178,15 @@ def run_script(argv):
         print("Check values", max(wfrEXY.arEx), max(wfrEXY.arEy))
 
         if do_propagation:
-            wfrEXY_T, wfrEXY_F = calculate_multi_energy_radiation_at_focus(wfrEXY, get_beamline(), resize=False, t0=t0)
+            wfrEXY_T  = calculate_multi_energy_radiation_at_focus(wfrEXY, get_beamline(), resize=False, t0=t0)
 
-            extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F, polarization="s")
-            extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F, polarization="p")
+            extract_data_multi_electron_radiation_at_focus(wfrEXY_T, polarization="s")
+            extract_data_multi_electron_radiation_at_focus(wfrEXY_T, polarization="p")
     else:
         wfrEXY_T = load_3D_wavefront(t0=t0, filename=WAVEFRONT_T_3D_FILE)
-        wfrEXY_F = load_3D_wavefront(t0=time.time(), filename=WAVEFRONT_F_3D_FILE)
 
-        extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F, polarization="s")
-        extract_data_multi_electron_radiation_at_focus(wfrEXY_T, wfrEXY_F, polarization="p")
+        extract_data_multi_electron_radiation_at_focus(wfrEXY_T, polarization="s")
+        extract_data_multi_electron_radiation_at_focus(wfrEXY_T, polarization="p")
 
 if __name__=="__main__":
     run_script(sys.argv[1:])

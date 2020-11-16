@@ -18,7 +18,7 @@ if __name__=="__main__":
     try:    shiftx = float(sys.argv[2])
     except: shiftx = 0.0
 
-    wfr = calculate_initial_single_energy_radiation(get_electron_beam(x0=2e-6),
+    wfr = calculate_initial_single_energy_radiation(get_electron_beam(x0=-2e-6),
                                                     get_magnetic_field_container(magnetic_field_file_name),
                                                     energy=energy,
                                                     source_parameters=default_source_parameters,

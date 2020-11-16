@@ -35,16 +35,23 @@ def AuxReadInMagFld3D(filePath, sCom):
     return SRWLMagFld3D(locArBx, locArBy, locArBz, xNp, yNp, zNp, xRange, yRange, zRange, 1)
 
 
-def get_magnetic_field_container(filename):
-    magnetic_structure = AuxReadInMagFld3D(filename, "#")
+def get_magnetic_field_container(filename, from_file=False):
+    if from_file:
+        magnetic_structure = AuxReadInMagFld3D(filename, "#")
 
-    magnetic_field_container = SRWLMagFldC()
-    magnetic_field_container.allocate(1)
+        magnetic_field_container = SRWLMagFldC()
+        magnetic_field_container.allocate(1)
 
-    magnetic_field_container.arMagFld[0] = magnetic_structure
-    magnetic_field_container.arMagFld[0].interp = 3
-    magnetic_field_container.arXc[0] = 0.0
-    magnetic_field_container.arYc[0] = 0.0
-    magnetic_field_container.arZc[0] = 0.0
+        magnetic_field_container.arMagFld[0] = magnetic_structure
+        magnetic_field_container.arMagFld[0].interp = 3
+        magnetic_field_container.arXc[0] = 0.0
+        magnetic_field_container.arYc[0] = 0.0
+        magnetic_field_container.arZc[0] = 0.0
+    else:
+        magnetic_structure = SRWLMagFldM(_G=1.6, _m=1, _n_or_s='n', _Leff=0.129)
+        magnetic_field_container = SRWLMagFldC(_arMagFld=[magnetic_structure],
+                                               _arXc=array('d', [0.0]),
+                                               _arYc=array('d', [0.0]),
+                                               _arZc=array('d', [0.0]))
 
     return magnetic_field_container

@@ -37,7 +37,7 @@ def run_script(argv):
 
     energies      = numpy.linspace(e_in, e_fin, n_e)
     delta_energy  = energies[1] - energies[0]
-    electron_beam = get_electron_beam(x0=5e-6)
+    electron_beam = get_electron_beam(x0=-2e-6)
     magnetic_field_container = get_magnetic_field_container(magnetic_field_file_name)
 
     dim_x = 201
@@ -54,31 +54,26 @@ def run_script(argv):
     source_parameters      = default_source_parameters
     propagation_parameters = auto_parameters
 
-    accepted_delta = 10000 if delta_energy >= 1 else 5000 if delta_energy >= 0.1 else 1000
-
     for energy, ie in zip(energies, range(n_e)):
-        calculate = True
-        while(calculate):
-            wfr = calculate_initial_single_energy_radiation(electron_beam, magnetic_field_container, energy=energy, source_parameters=source_parameters)
-            wfr = calculate_single_energy_radiation_at_focus(wfr, get_beamline(parameters=propagation_parameters))
+        wfr = calculate_initial_single_energy_radiation(electron_beam, magnetic_field_container, energy=energy, source_parameters=source_parameters)
+        wfr = calculate_single_energy_radiation_at_focus(wfr, get_beamline(parameters=propagation_parameters))
 
-            x_coord    = numpy.linspace(wfr.mesh.xStart, wfr.mesh.xFin, wfr.mesh.nx) * 1000 # mm
-            y_coord    = numpy.linspace(wfr.mesh.yStart, wfr.mesh.yFin, wfr.mesh.ny) * 1000 # mm
-            pixel_area = (x_coord[1] - x_coord[0]) * (y_coord[1] - y_coord[0])              # mm^2
+        x_coord    = numpy.linspace(wfr.mesh.xStart, wfr.mesh.xFin, wfr.mesh.nx) * 1000 # mm
+        y_coord    = numpy.linspace(wfr.mesh.yStart, wfr.mesh.yFin, wfr.mesh.ny) * 1000 # mm
+        pixel_area = (x_coord[1] - x_coord[0]) * (y_coord[1] - y_coord[0])              # mm^2
 
-            intensity     = get_intensity(wfr)                   # photons/s/mm^2/0.1%BW
-            intensity[numpy.where(numpy.isnan(intensity))] = 0.0
-            spectral_flux = intensity.sum() * pixel_area         # photons/s/0.1%BW
+        intensity     = get_intensity(wfr)                   # photons/s/mm^2/0.1%BW
+        intensity[numpy.where(numpy.isnan(intensity))] = 0.0
 
-            calculate = False
-            #calculate = (spectral_flux == 0 or spectral_flux > 1e7)                                                # misterious SRW bug....
-            #if not calculate and ie > 0: calculate = numpy.abs(spectral_flux - spectrum[ie-1, 1]) > accepted_delta # misterious SRW bug....
+        integrated_flux = intensity.sum() * pixel_area         # photons/s/0.1%BW
 
-        power         = (spectral_flux * 1e3 * delta_energy * codata.e) * 1e9 # power in nW in the interval E + dE
+        #print("Energy", round(energy, 2), ", pixel area", pixel_area, "mm^2, Peak Intensity", numpy.max(intensity), "ph/s/0.1%BW/mm^2")
+
         power_density = (intensity * 1e3 * delta_energy * codata.e) * 1e9     # nW/mm^2
+        power         = (integrated_flux * 1e3 * delta_energy * codata.e) * 1e9 # power in nW in the interval E + dE
 
         # cumulative quantities ##################################
-        spectrum[ie, 1]   = spectral_flux
+        spectrum[ie, 1]   = integrated_flux
 
         # to cumulate we need the same spatial mesh
         interpolator  = RectBivariateSpline(x_coord, y_coord, power_density)
@@ -87,7 +82,7 @@ def run_script(argv):
 
         total_power_density += power_density
 
-        print("Energy", round(energy, 2), ", S.F.", round(spectral_flux, 2), "ph/s/0.1%BW, Power", round(power, 6), "nW, Peak P.D.", round(numpy.max(power_density), 4), "nW/mm^2")
+        print("Energy", round(energy, 2), ", S.F.", round(integrated_flux, 2), "ph/s/0.1%BW, Power", round(power, 6), "nW, Peak P.D.", round(numpy.max(power_density), 4), "nW/mm^2")
 
     outdir = os.path.join(base_output_dir, "frequency_domain")
     if not os.path.exists(outdir): os.mkdir(outdir)

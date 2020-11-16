@@ -7,7 +7,7 @@ magnetic_field_file_name = "/Users/lrebuffi/Box Sync/Luca_Xianbo_Share/Sasha/BM/
 
 base_output_dir = "/Users/lrebuffi/Box Sync/Luca_Xianbo_Share/Sasha/BM/output"
 
-ring_electron_energy = 0.147 # GeV
+ring_electron_energy = 0.150#0.147 # GeV
 current_1_electron = 1.8125191290905425e-08 # A (current of 1 electron emitting on +-1/gamma)
 
 gamma = ring_electron_energy/(codata.electron_mass*codata.c**2/codata.e*1e-9)

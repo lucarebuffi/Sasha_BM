@@ -16,7 +16,6 @@ def plot_data_files(outdir=None, plot_imaginary=False, polarization="s"):
         arPhiEt, _     = srwl_uti_read_intens_ascii(os.path.join(outdir, "Phi_E_in_time_domain.dat"))
         arPowt, _      = srwl_uti_read_intens_ascii(os.path.join(outdir, "Power_in_time_domain.dat"))
         arPowDt, _     = srwl_uti_read_intens_ascii(os.path.join(outdir, "Power_Density_in_time_domain.dat"))
-        arIntf, meshf  = srwl_uti_read_intens_ascii(os.path.join(outdir, "Int_in_frequency_domain.dat"))
     else:
         arReEt, mesh   = srwl_uti_read_intens_ascii(os.path.join(outdir, "Re_E_in_time_domain_" + polarization + ".dat"))
         arImEt, _      = srwl_uti_read_intens_ascii(os.path.join(outdir, "Im_E_in_time_domain_" + polarization + ".dat"))
@@ -24,14 +23,12 @@ def plot_data_files(outdir=None, plot_imaginary=False, polarization="s"):
         arPhiEt, _     = srwl_uti_read_intens_ascii(os.path.join(outdir, "Phi_E_in_time_domain_" + polarization + ".dat"))
         arPowt, _      = srwl_uti_read_intens_ascii(os.path.join(outdir, "Power_in_time_domain_" + polarization + ".dat"))
         arPowDt, _     = srwl_uti_read_intens_ascii(os.path.join(outdir, "Power_Density_in_time_domain_" + polarization + ".dat"))
-        arIntf, meshf  = srwl_uti_read_intens_ascii(os.path.join(outdir, "Int_in_frequency_domain_" + polarization + ".dat"))
 
-    plot_data(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, plot_imaginary, polarization)
+    plot_data(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, plot_imaginary, polarization)
 
-def plot_data(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, meshf, plot_imaginary=False, polarization="s"):
+def plot_data(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, plot_imaginary=False, polarization="s"):
     factor       = c * 1e6  # to micron (c*t)
     plot_range   = [mesh.eStart * factor, mesh.eFin * factor, mesh.ne]
-    plot_range_f = [meshf.eStart, meshf.eFin, mesh.ne]
 
     if plot_imaginary:
         uti_plot1d(arReEt, plot_range,
@@ -57,10 +54,6 @@ def plot_data(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, arIntf, m
     uti_plot1d(arPowDt, plot_range,
                labels=['ct', 'Power Density', 'Power Density (On Axis) in Time Domain (Pol:' + polarization + ')'],
                units=['\u03bcm', 'W/mm^2'])
-
-    uti_plot1d(arIntf, plot_range_f,
-               labels=['E', 'Flux Density', 'Flux Density (On Axis) in Frequency Domain (Pol:' + polarization + ')'],
-               units=['eV', 'ph/s/.1%BW/mm^2'])
 
     uti_plot_show()
 
