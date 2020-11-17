@@ -30,8 +30,8 @@ def run_script(argv):
         n_e   = int(argv[2])
     else:
         e_in  = 0.1
-        e_fin = 80.1
-        n_e   = 81
+        e_fin = 200.1
+        n_e   = 2001
 
     app = QApplication([])
 
@@ -40,8 +40,8 @@ def run_script(argv):
     electron_beam = get_electron_beam(x0=-2e-6)
     magnetic_field_container = get_magnetic_field_container(magnetic_field_file_name)
 
-    dim_x = 201
-    dim_y = 201
+    dim_x = 501
+    dim_y = 501
 
     # um in mm
     plot_coordinates_x = numpy.linspace(-0.1, 0.1, dim_x)
