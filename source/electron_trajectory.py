@@ -52,6 +52,6 @@ if __name__=="__main__":
     if not srwl_uti_proc_is_master(): exit()
 
     partTraj = calculate_trajectory(get_electron_beam(),
-                                    get_magnetic_field_container(magnetic_field_file_name))
+                                    get_magnetic_field_container(magnetic_field_file_name, from_file=True))
 
     plot_trajectory(partTraj)

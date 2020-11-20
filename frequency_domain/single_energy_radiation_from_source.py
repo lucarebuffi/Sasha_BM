@@ -58,7 +58,7 @@ if __name__=="__main__":
     except: shiftx = 0.0
 
     wfr = calculate_initial_single_energy_radiation(get_electron_beam(x0=2e-06),
-                                                    get_magnetic_field_container(magnetic_field_file_name),
+                                                    get_magnetic_field_container(magnetic_field_file_name, from_file=True),
                                                     energy=energy,
                                                     aperturex=0.015,
                                                     aperturey=0.015,
