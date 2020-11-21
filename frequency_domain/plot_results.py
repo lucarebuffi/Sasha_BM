@@ -10,7 +10,7 @@ def plot_spectrum(spectrum):
     plt.title("Spectrum used for Power Calculation")
     plt.show()
 
-def plot_power_density(x_coord, y_coord, power_density):
+def plot_power_density(x_coord, y_coord, power_density, total_power):
     origin = (x_coord[0], y_coord[0])
     scale = (x_coord[1] - x_coord[0], y_coord[1] - y_coord[0])
     area = scale[0]*scale[1]
@@ -45,7 +45,7 @@ def plot_power_density(x_coord, y_coord, power_density):
     plot_canvas.setActiveImage("Power Density")
     plot_canvas.setGraphXLabel("Horizontal Position [mm]")
     plot_canvas.setGraphYLabel("Vertical Position [mm]")
-    plot_canvas.setGraphTitle("Power Density [nW/mm^2]\nTotal Power = " + str(round(power_density.sum()*area, 6)) + " nW")
+    plot_canvas.setGraphTitle("Power Density [nW/mm^2]\nTotal Power = " + str(round(total_power, 6)) + "(" + str(round(power_density.sum()*area, 6)) + ") nW")
 
     plot_canvas.show()
 

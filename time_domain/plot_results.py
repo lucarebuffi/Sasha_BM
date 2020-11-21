@@ -60,10 +60,11 @@ def plot_data(arAmpEt, arPhiEt, arPowDt, arPowt, arReEt, arImEt, mesh, plot_imag
 
 if __name__=="__main__":
     if not srwl_uti_proc_is_master(): exit()
+    plot_imaginary = True
 
     try: plot_data_files(outdir=sys.argv[1], plot_imaginary=sys.argv[2]=="1", polarization=sys.argv[3])
     except:
         try: plot_data_files(outdir=sys.argv[1], plot_imaginary=sys.argv[2]=="1")
         except:
-            try:    plot_data_files(outdir=sys.argv[1])
-            except: plot_data_files()
+            try:    plot_data_files(outdir=sys.argv[1], plot_imaginary=plot_imaginary)
+            except: plot_data_files(plot_imaginary=plot_imaginary)
